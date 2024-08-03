@@ -2,34 +2,34 @@ import numpy as np
 import pandas as pd
 
 
-def rand_group_b(group_b:float, val_group_a:float, val_group_b:float, size:int, n=80):
+def rand_group_b(group_b: float, val_group_a: float, val_group_b: float, size: int, n=80):
     """
-    Generate random samples for group B and calculate y values.
+    Generate random samples for the proportion of group B and calculate corresponding values for groups A and B.
 
     Parameters:
-    group_b (float): Proportion of group B in the population (A+B).
-    val_group_a (float): value for group A.
-    val_group_b (float): value for group B.
+    group_b (float): Proportion of group B in the total population (A+B).
+    val_group_a (float): Representative value for group A.
+    val_group_b (float): Representative value for group B.
     size (int): Number of samples to generate.
-    n (int, optional): Sample size for standard deviation calculation. Defaults to 80.
+    n (int, optional): Sample size for standard error calculation. Defaults to 80.
 
     Returns:
     tuple: Two numpy arrays:
-        - sample_b: Random samples representing proportion of group B.
-        - y: Calculated tht values based on the samples.
+        - sample_b: Random samples representing the proportion of group B.
+        - y: Calculated outcome values based on the samples.
 
     Notes:
-    - Uses normal distribution to generate samples.
-    - Standard deviation is calculated using the formula for proportion sampling.
-    - y is a weighted average of group A and B values based on the sample.
+    - Utilizes a normal distribution to generate samples.
+    - Standard error is calculated using the formula for the SD of the Barloni distribution.
+    - The outcome 'y' is computed as a weighted average of group A + B values based on the sampled proportions.
     """
-    # Calculate standard deviation for the Barloni distribution
-    sd = np.sqrt(group_b * (1 - group_b) / n)
+    # Calculate standard error for the sampling distribution of proportions
+    se = np.sqrt(group_b * (1 - group_b) / n)
 
-    # Generate random samples for group B proportion
-    sample_b = np.random.normal(group_b, sd, size)
+    # Generate random samples for group B proportions
+    sample_b = np.random.normal(group_b, se, size)
 
-    # Calculate y values as a weighted average
+    # Calculate outcome values as a weighted average
     y = val_group_b * sample_b + val_group_a * (1 - sample_b)
 
     return sample_b, y
