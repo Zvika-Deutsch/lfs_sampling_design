@@ -85,14 +85,16 @@ def mean_by_year(times, val: pd.Series | np.ndarray | list):
     - For pd.Series, the function uses groupby on years.
     - For list and np.ndarray, the function assumes 12 values per year and averages over each 12 values.
     """
+
+    year = np.array(times.year)
     if isinstance(val, pd.Series):
         v = val.groupby(times).mean()
     elif isinstance(val, list):
-        t = np.array(val)
-        v = list(val.reshape((len(val) // 12, 12)).mean(axis=1))
+
+        v = np.array(np.split(val, np.unique(year, return_index=True)[1][1:])).mean(axis=1)
     elif isinstance(val, np.ndarray):
-        v = list(val.reshape((len(val) // 12, 12)).mean(axis=1))
+        v = np.array(np.split(val, np.unique(year, return_index=True)[1][1:])).mean(axis=1)
     else:
         raise ValueError('val must be pd.Series or list or np.ndarray')
-    t = list(times.to_period('Y').unique().astype(str))
+    t = list(np.unique(year).astype(str))
     return t, v
